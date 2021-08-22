@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ThreeNet.LowLevel\ThreeNet.LowLevel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="libpng16-16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

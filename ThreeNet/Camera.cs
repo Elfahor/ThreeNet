@@ -1,7 +1,9 @@
 ﻿using SDL2;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Numerics;
+using ThreeNet.LowLevel.Sdl;
 using IntPair = System.Tuple<int, int>;
 
 namespace ThreeNet
@@ -16,11 +18,11 @@ namespace ThreeNet
 
 		public List<Mesh> Scene { get; } = new();
 
-		public void Render(ref IntPtr renderer)
+		public void Render(Renderer renderer)
 		{
 			foreach (Mesh mesh in Scene)
 			{
-				RenderMesh(mesh, ref renderer);
+				RenderMesh(mesh, renderer);
 			}
 		}
 
@@ -35,7 +37,7 @@ namespace ThreeNet
 				);
 		}
 
-		private static void RenderMesh(Mesh mesh, ref IntPtr renderer)
+		private static void RenderMesh(Mesh mesh, Renderer renderer)
 		{
 			Matrix4x4 M2W = mesh.Transform.GetTransformMatrix();
 			IntPair[] screenVerts = new IntPair[mesh.vertices.Length];
@@ -45,7 +47,7 @@ namespace ThreeNet
 				Vector3 worldVert = Vector3.Transform(localVert, M2W);
 				V2F v = mesh.Material!.Vertex(in worldVert);
 				IntPair screenPos = Clip2Screen(v.position, 800, 600);
-				SDL.SDL_RenderDrawPoint(renderer, screenPos.Item1, screenPos.Item2);
+				//renderer.SetPixel(screenPos, Color.White);
 				screenVerts[i] = screenPos;
 
 				if (i == 0)
@@ -61,9 +63,9 @@ namespace ThreeNet
 				IntPair vert1 = screenVerts[v1 - 1];
 				IntPair vert2 = screenVerts[v2 - 1];
 				IntPair vert3 = screenVerts[v3 - 1];
-				SDL.SDL_RenderDrawLine(renderer, vert1.Item1, vert1.Item2, vert2.Item1, vert2.Item2);
-				SDL.SDL_RenderDrawLine(renderer, vert1.Item1, vert1.Item2, vert3.Item1, vert3.Item2);
-				SDL.SDL_RenderDrawLine(renderer, vert2.Item1, vert2.Item2, vert3.Item1, vert3.Item2);
+				renderer.DrawLine(vert1, vert2, Color.White);
+				renderer.DrawLine(vert1, vert3, Color.White);
+				renderer.DrawLine(vert2, vert3, Color.White);
 			}
 		}
 

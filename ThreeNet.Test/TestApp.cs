@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Numerics;
 using System.Threading;
 using ThreeNet.LowLevel;
@@ -11,7 +12,7 @@ namespace ThreeNet.Test
 {
 	internal class TestApp : App
 	{
-		private readonly FpsCounter fps = new(100);
+		private readonly FpsCounter fps = new(20);
 
 		public TestApp() : base("3D Engine")
 		{
@@ -46,7 +47,7 @@ namespace ThreeNet.Test
 		{
 			Camera.MainCamera.ComputeProjectMatrix(90, 0.1f, 20);
 			Mesh ship = Mesh.LoadFromObj("ship.obj");
-			ship.Transform.Position = new Vector3(0, 0, 1000);
+			ship.Transform.Position = new Vector3(0, 0, -2);
 			Camera.MainCamera.Scene.Add(ship);
 		}
 
@@ -60,13 +61,9 @@ namespace ThreeNet.Test
 
 		protected override void OnRender()
 		{
-			SDL.SDL_RenderClear(renderer);
-			SDL.SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-			SDL.SDL_RenderDrawRect(renderer, IntPtr.Zero);
-			SDL.SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-			Camera.MainCamera.Render(ref renderer);
-			SDL.SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-			SDL.SDL_RenderPresent(renderer);
+			renderer.Fill(Color.Black);
+			Camera.MainCamera.Render(renderer);
+			renderer.Flip();
 			fps.EndFrame();
 			Console.WriteLine($"FPS: {fps.AverageFps}");
 		}

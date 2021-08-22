@@ -1,5 +1,6 @@
 ﻿using SDL2;
 using System;
+using ThreeNet.LowLevel.Sdl;
 
 namespace ThreeNet.LowLevel
 {
@@ -8,7 +9,7 @@ namespace ThreeNet.LowLevel
 		public string WindowTitle { get; init; }
 
 		public IntPtr window;
-		public IntPtr renderer;
+		public Renderer renderer;
 		private bool running;
 
 		protected App(string windowTitle)
@@ -21,37 +22,25 @@ namespace ThreeNet.LowLevel
 			int initResult = SDL.SDL_Init(SDL.SDL_INIT_EVERYTHING);
 			if (initResult >= 0)
 			{
-				int winCreationResult = SDL.SDL_CreateWindowAndRenderer(800,
-														   600,
-														   SDL.SDL_WindowFlags.SDL_WINDOW_RESIZABLE,
-														   out window,
-														   out renderer);
-				if (winCreationResult >= 0)
-				{
-					SDL.SDL_SetWindowTitle(window, WindowTitle);
-					OnInitialize();
+				window = SDL.SDL_CreateWindow(WindowTitle, 100, 100, 800, 600, SDL.SDL_WindowFlags.SDL_WINDOW_RESIZABLE);
+				renderer = new(window);
+				OnInitialize();
 
-					running = true;
-					while (running)
+				running = true;
+				while (running)
+				{
+					while (SDL.SDL_PollEvent(out SDL.SDL_Event e) == 1)
 					{
-						while (SDL.SDL_PollEvent(out SDL.SDL_Event e) == 1)
-						{
-							OnEvent(e);
-						}
-
-						OnLoop();
-						OnRender();
+						OnEvent(e);
 					}
-					OnExit();
+
+					OnLoop();
+					OnRender();
+				}
+				OnExit();
 
 
-					return 0;
-				}
-				else
-				{
-					Console.WriteLine("Creating window {0}", winCreationResult);
-					return winCreationResult;
-				}
+				return 0;
 			}
 			else
 			{
@@ -63,6 +52,7 @@ namespace ThreeNet.LowLevel
 		public void Exit()
 		{
 			running = false;
+			SDL.SDL_DestroyWindow(window);
 			SDL.SDL_Quit();
 		}
 

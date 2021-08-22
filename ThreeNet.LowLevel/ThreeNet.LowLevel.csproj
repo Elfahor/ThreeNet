@@ -10,10 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-	<ProjectReference Include="..\ThreeNet\ThreeNet.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
 	<None Update="libpng16-16.dll">
 	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	</None>
