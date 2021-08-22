@@ -11,6 +11,11 @@ namespace ThreeNet.LowLevel
 		public IntPtr renderer;
 		private bool running;
 
+		protected App(string windowTitle)
+		{
+			WindowTitle = windowTitle ?? throw new ArgumentNullException(nameof(windowTitle));
+		}
+
 		public int Run()
 		{
 			int initResult = SDL.SDL_Init(SDL.SDL_INIT_EVERYTHING);
@@ -64,11 +69,9 @@ namespace ThreeNet.LowLevel
 		protected abstract void OnInitialize();
 		protected virtual void OnEvent(SDL.SDL_Event e)
 		{
-			switch (e.type)
+			if (e.type == SDL.SDL_EventType.SDL_QUIT)
 			{
-				case SDL.SDL_EventType.SDL_QUIT:
-					Exit();
-					break;
+				Exit();
 			}
 		}
 		protected abstract void OnLoop();

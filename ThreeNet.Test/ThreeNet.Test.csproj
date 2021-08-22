@@ -10,4 +10,10 @@
     <ProjectReference Include="..\ThreeNet\ThreeNet.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ship.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

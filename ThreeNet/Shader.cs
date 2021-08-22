@@ -6,14 +6,11 @@ namespace ThreeNet
 {
 	public abstract class Shader
 	{
-		Mesh? owner;
+		public static Lazy<Shader> Default { get; } = new Lazy<Shader>(() => new DefaultShader());
 
-		protected abstract V2F Vertex();
-		protected abstract Color Fragment(V2F vert);
+		public abstract V2F Vertex(in Vector3 vert);
+		public abstract Color Fragment(in V2F vert);
 
-		public Vector3 WorldToClipPos()
-		{
-			throw new NotImplementedException();
-		}
+		public static Vector3 WorldToClipPos(Vector3 worldPos) => Vector3.Transform(worldPos, Camera.MainCamera.ProjectionMatrix);
 	}
 }

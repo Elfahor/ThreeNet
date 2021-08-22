@@ -4,13 +4,31 @@ using System.Numerics;
 
 namespace ThreeNet
 {
-	public struct Transform : IEquatable<Transform>
+	public class Transform : IEquatable<Transform>
 	{
-		public Vector3 Position { get; set; }
-		public Vector3 Scale { get; set; }
-		public Vector3 Rotation { get; set; }
+		public Vector3 Position { get => position; set => position = value; }
+		public Vector3 Scale { get => scale; set => scale = value; }
+		public Vector3 Rotation
+		{
+			get => rotation; set
+			{
+				value.X %= MathF.PI * 2;
+				value.Y %= MathF.PI * 2;
+				value.Z %= MathF.PI * 2;
+				rotation = value;
+			}
+		}
 
-		public bool Equals(Transform other) => EqualityComparer<Transform>.Default.Equals(this, other);
+		public Transform()
+		{
+			Position = Vector3.Zero;
+			Rotation = Vector3.Zero;
+			Scale = Vector3.One;
+		}
+
+		private Vector3 position;
+		private Vector3 scale;
+		private Vector3 rotation;
 
 		public Matrix4x4 GetTransformMatrix()
 		{
@@ -22,6 +40,8 @@ namespace ThreeNet
 			return scale * rotation * position;
 
 		}
+
+		public bool Equals(Transform? other) => EqualityComparer<Transform>.Default.Equals(this, other);
 
 		public override bool Equals(object? obj) => obj is Transform transform && Equals(transform);
 
